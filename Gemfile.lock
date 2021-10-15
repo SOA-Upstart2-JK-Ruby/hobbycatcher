@@ -44,6 +44,7 @@ GEM
     unf_ext (0.0.8)
 
 PLATFORMS
+  arm64-darwin-20
   x86_64-linux
 
 DEPENDENCIES
@@ -54,4 +55,4 @@ DEPENDENCIES
   reek
 
 BUNDLED WITH
-   2.2.15
+   2.2.27
