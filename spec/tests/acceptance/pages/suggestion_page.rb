@@ -5,7 +5,7 @@ class SuggestionPage
   include PageObject
   
   page_url HobbyCatcher::App.config.APP_HOST +
-           '/suggestion/<%=params[:hobby.id]%>'
+           '/suggestion/<%=params[:id]%>'
   
   div(:warning_message, id: 'flash_bar_danger')
   div(:success_message, id: 'flash_bar_success')
