@@ -28,7 +28,6 @@ module HobbyCatcher
         # Get cookie viewer's previously seen test history
         session[:watching] ||= []
         viewable_hobbies = Views::HobbiesList.new(session[:watching])
-
         view 'home', locals: { hobbies: viewable_hobbies }
       end
 
@@ -39,6 +38,7 @@ module HobbyCatcher
           end
 
           routing.get do
+            
             result = Service::ShowTest.new.call
 
             if result.failure?
@@ -89,17 +89,17 @@ module HobbyCatcher
         routing.is do
           # POST /introhobby/
           routing.post do
-            type       = routing.params['type'].to_i
-            difficulty = routing.params['difficulty'].to_i
-            freetime   = routing.params['freetime'].to_i
-            emotion    = routing.params['emotion'].to_i
-            answer = [type, difficulty, freetime, emotion]
+            
+            url_request = Forms::AddAnswer.new.call(routing.params)
 
-            unless answer.any?(&:zero?) == false
+            if url_request.failure?
               flash[:error] = 'Seems like you did not answer all of the questions'
               response.status = 400
               routing.redirect '/test'
             end
+
+            answer = [url_request[:type], url_request[:difficulty], url_request[:freetime], url_request[:emotion]]
+
             hobby = Mapper::HobbySuggestions.new(answer).build_entity
             # Add new record to watched set in cookies
             session[:watching].insert(0, hobby.answers).uniq!
@@ -111,24 +111,21 @@ module HobbyCatcher
         routing.on String do |hobby_id|
           # GET /introhoppy/hoppy
           routing.get do
-            hobby = HobbyCatcher::Database::HobbyOrm.where(id: hobby_id).first
-            categories = hobby.owned_categories
-            courses_intros = []
-            categories.map do |category|
-              courses = Udemy::CourseMapper.new(App.config.UDEMY_TOKEN).find('subcategory', category.name)
-              courses.map do |course_intro|
-                course = Repository::For.entity(course_intro)
-                course.create(course_intro) if course.find(course_intro).nil?
-              end
-              courses_intros.append(courses)
-            end
-            viewable_hobby = Views::Hobby.new(hobby)
-            view 'suggestion', locals: { hobby: viewable_hobby, courses: courses_intros.flatten }
 
-          rescue StandardError => e
-            flash[:error] = 'Having trouble accessing Udemy courses'
-            puts e.message
-            routing.redirect '/'
+            result = Service::ShowSuggestion.new.call(hobby_id)
+            
+            if result.failure?
+              flash[:error] = result.failure
+              routing.redirect '/'
+            else
+              suggestions = result.value!
+            end
+
+            viewable_hobby = Views::Suggestion.new(
+              suggestions[:hobby], suggestions[:categories], suggestions[:courses_intros]
+            )
+            
+            view 'suggestion', locals: { hobby: viewable_hobby}
           end
         end
       end

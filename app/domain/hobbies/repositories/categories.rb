@@ -43,7 +43,6 @@ module HobbyCatcher
 
       def self.rebuild_entity(db_record)
         return nil unless db_record
-
         Entity::Category.new(
           db_record.to_hash.merge(
             ownhobby: Hobbies.rebuild_entity(db_record.ownhobby)

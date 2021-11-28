@@ -14,7 +14,7 @@
   .row
     h5.text-warning  You might like...
   .row.align-items-center
-    -hobby.categories_each do |category|
+    - hobby.categories_each do |category|
       .row
         .col
           img src="https://images.unsplash.com/photo-1495461199391-8c39ab674295?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80" style="height:200px"
@@ -24,8 +24,8 @@
       .row
         br
       .row
-        - courses.each do |course|
-          - if course.owncategory.name == category.name
+        - hobby.courses_each do |course|
+          - if course.category_name == category.name
             .col-md-3
               .card
                 img.card-img-top src="#{course.image}"
