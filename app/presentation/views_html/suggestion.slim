@@ -25,7 +25,7 @@
         br
       .row
         - hobby.courses_each do |course|
-          - if course.category_name == category.name
+          - if course.category_id == category.id
             .col-md-3
               .card
                 img.card-img-top src="#{course.image}"

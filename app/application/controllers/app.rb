@@ -117,11 +117,9 @@ module HobbyCatcher
               routing.redirect '/'
             else
               suggestions = result.value!
-            end
 
-            viewable_hobby = Views::Suggestion.new(
-              suggestions[:hobby], suggestions[:categories], suggestions[:courses_intros]
-            )
+              viewable_hobby = Views::Suggestion.new(suggestions)
+            end
 
             view 'suggestion', locals: { hobby: viewable_hobby }
           end
