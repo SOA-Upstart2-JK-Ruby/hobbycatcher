@@ -4,8 +4,8 @@ module Views
   # View for a single question entity
   class Question
     def initialize(question, index = nil)
-      @question    = question
-      @index    = index
+      @question = question
+      @index = index
     end
 
     def entity
@@ -24,11 +24,11 @@ module Views
       @question.description
     end
 
-    def answerA
+    def answer1
       @question.answerA
     end
 
-    def answerB
+    def answer2
       @question.answerB
     end
 

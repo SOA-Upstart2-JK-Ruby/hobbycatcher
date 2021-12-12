@@ -37,6 +37,7 @@ module HobbyCatcher
         rebuild_entity(db_course)
       end
 
+      # rubocop:disable Metrics/MethodLength
       def self.rebuild_entity(db_record)
         return nil unless db_record
 
@@ -52,6 +53,7 @@ module HobbyCatcher
           owncategory_id: db_record.owncategory_id
         )
       end
+      # rubocop:enable Metrics/MethodLength
 
       def self.rebuild_many(db_records)
         db_records.map do |db_course|
@@ -77,7 +79,7 @@ module HobbyCatcher
           end
         end
       end
-      
+
       def self.db_find_or_create(entity)
         Database::CourseOrm.find_or_create(entity.to_attr_hash)
       end

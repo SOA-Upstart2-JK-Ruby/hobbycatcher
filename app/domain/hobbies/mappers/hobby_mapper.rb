@@ -52,7 +52,7 @@ module HobbyCatcher
         end
 
         def categories
-          @categories.map do |category| 
+          @categories.map do |category|
             CategoryMapper.build_entity(category[:name])
           end
         end

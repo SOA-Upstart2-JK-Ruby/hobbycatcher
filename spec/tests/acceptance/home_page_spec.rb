@@ -9,11 +9,8 @@ describe 'Homepage Acceptance Tests' do
   before do
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
-    @browser = Watir::Browser.new :chrome, :options => options
-    # DatabaseHelper.wipe_database
-    # Headless error? https://github.com/leonid-shevtsov/headless/issues/80
-    # @headless = Headless.new
-    # @browser = Watir::Browser.new
+    DatabaseHelper.wipe_database
+    @browser = Watir::Browser.new :chrome, options: options
   end
 
   after do
@@ -38,21 +35,21 @@ describe 'Homepage Acceptance Tests' do
     it '(HAPPY) redirect to test page' do
       # WHEN: user click the button
       visit HomePage do |page|
-        page.catch_hobby_page
+        page.catch_hobby
         # THEN: they should find themselves on the test page
         @browser.url.include? 'test'
       end
-    end  
+    end
   end
 
   describe 'Click catch my history' do
     it '(HAPPY) redirect to history page' do
       # WHEN: user click the button
       visit HomePage do |page|
-        page.view_history_page
+        page.view_history
         # THEN: they should find themselves on the history page
         @browser.url.include? 'history'
       end
-    end  
+    end
   end
 end
