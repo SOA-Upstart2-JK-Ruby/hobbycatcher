@@ -5,7 +5,7 @@ class SuggestionPage
   include PageObject
   
   page_url HobbyCatcher::App.config.APP_HOST +
-           '/suggestion/<%=params[:hobby.id]%>'
+           '/suggestion/<%=params[:hobby_id]%>'
   
   div(:warning_message, id: 'flash_bar_danger')
   div(:success_message, id: 'flash_bar_success')
@@ -16,7 +16,7 @@ class SuggestionPage
   img(:hobby_img, id: 'hobby_img')
   button(:try_again, id: 'try-again-btn')
 
-  def try_again
+  def try_again_btn
     self.try_again
   end
 end
