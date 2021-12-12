@@ -7,23 +7,24 @@ require_relative 'pages/suggestion_page'
 
 describe 'Test Page Acceptance Tests' do
   include PageObject::PageFactory
-  
+
   before do
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     DatabaseHelper.wipe_database
-    @browser = Watir::Browser.new :chrome, :options => options
+    @browser = Watir::Browser.new :chrome, options: options
   end
-  
+
   after do
     @browser.close
   end
-  
+
   describe 'See Test Questions and Answers' do
     it '(HAPPY) see the answer radio' do
       # GIVEN: user enter the test page
       visit HomePage do |page|
-        page.catch_hobby_page
+        page.catch_hobby
+        @browser.url.include? 'test'
       end
 
       # THEN: should see test page elements
@@ -38,7 +39,8 @@ describe 'Test Page Acceptance Tests' do
     it '(HAPPY) provide the correct hobby suggestion based on the test answer' do
       # GIVEN: user enter the test page
       visit HomePage do |page|
-        page.catch_hobby_page
+        page.catch_hobby
+        @browser.url.include? 'test'
       end
 
       # WHEN: answer the question with the answers
@@ -47,7 +49,7 @@ describe 'Test Page Acceptance Tests' do
         _(page.questions[1].answer1_element.click)
         _(page.questions[2].answer1_element.click)
         _(page.questions[3].answer1_element.click)
-        page.see_result_page
+        page.see_result
       end
 
       # THEN: they should see hobby suggestion
@@ -61,12 +63,13 @@ describe 'Test Page Acceptance Tests' do
     it '(BAD) should report error if user does not answer all the questions' do
       # GIVEN: user enter the test page
       visit HomePage do |page|
-        page.catch_hobby_page
+        page.catch_hobby
+        @browser.url.include? 'test'
       end
-    
+
       # WHEN: user does not answer all of the questions
       visit TestPage do |page|
-        page.see_result_page
+        page.see_result
 
         # THEN: user should be on test page and see a warning message
         _(page.warning_message.downcase).must_include 'seems like you did not answer all of the questions'
