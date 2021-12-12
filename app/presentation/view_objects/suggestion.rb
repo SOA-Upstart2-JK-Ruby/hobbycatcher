@@ -7,10 +7,10 @@ require_relative 'course'
 module Views
   # View for a single hobby entity
   class Suggestion
-    def initialize(hobby, category, course, index = nil)
+    def initialize(hobby, index = nil)
       @hobby    = hobby
-      @category = category
-      @course   = course
+      @category = @hobby.categories
+      @course   = @category.map(&:courses)
       @index    = index
     end
 

@@ -9,28 +9,26 @@ describe 'Test Page Acceptance Tests' do
   include PageObject::PageFactory
   
   before do
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('--headless')
     DatabaseHelper.wipe_database
-    # Headless error? https://github.com/leonid-shevtsov/headless/issues/80
-    # @headless = Headless.new
-    @browser = Watir::Browser.new
+    @browser = Watir::Browser.new :chrome, :options => options
   end
   
   after do
     @browser.close
-    # @headless.destroy
   end
   
   describe 'See Test Questions and Answers' do
     it '(HAPPY) see the answer radio' do
       # GIVEN: user enter the test page
       visit HomePage do |page|
-        page.catch_hobby
+        page.catch_hobby_page
       end
 
       # THEN: should see test page elements
       visit TestPage do |page|
-        _(page.answer1.present?).must_equal true
-        _(page.answer2.present?).must_equal true
+        _(page.questions.exists?).must_equal true
         _(page.see_result_element.present?).must_equal true
       end
     end
@@ -40,50 +38,39 @@ describe 'Test Page Acceptance Tests' do
     it '(HAPPY) provide the correct hobby suggestion based on the test answer' do
       # GIVEN: user enter the test page
       visit HomePage do |page|
-        page.catch_hobby
-      end
-  
-      # WHEN: answer the question with the answers
-      visit TestPage do |page|
-        @browser.radio(id: 'type1').click
-        @browser.radio(id: 'difficulty1').click
-        @browser.radio(id: 'freetime1').click
-        @browser.radio(id: 'emotion1').click      
-        page.see_result
+        page.catch_hobby_page
       end
 
-      # THEN: they should see hobby suggestion of Lion
-      visit SuggestionPage do |page|
+      # WHEN: answer the question with the answers
+      visit TestPage do |page|
+        _(page.questions[0].answer1_element.click)
+        _(page.questions[1].answer1_element.click)
+        _(page.questions[2].answer1_element.click)
+        _(page.questions[3].answer1_element.click)
+        page.see_result_page
+      end
+
+      # THEN: they should see hobby suggestion
+      visit(SuggestionPage, using_params: { hobby_id: HOBBY_ID }) do |page|
+        page.url.include? 'suggestion/1'
         _(page.hobby_name).must_equal 'LION'
-        _(page.category_name).must_equal 'Dance'
+        _(page.category_name).must_equal 'Category: Dance'
       end
     end
 
     it '(BAD) should report error if user does not answer all the questions' do
       # GIVEN: user enter the test page
       visit HomePage do |page|
-        page.catch_hobby
+        page.catch_hobby_page
       end
     
       # WHEN: user does not answer all of the questions
       visit TestPage do |page|
-        # help me
-        page.see_result
+        page.see_result_page
 
         # THEN: user should be on test page and see a warning message
         _(page.warning_message.downcase).must_include 'seems like you did not answer all of the questions'
       end
     end
-  end
-
-  describe 'Click see result' do
-    it '(HAPPY) redirect to suggestion page' do
-      # WHEN: user click the button
-      visit TestPage do |page|
-        page.see_result
-        # THEN: they should find themselves on the suggestion page
-        @browser.url.include? 'suggestion'
-      end
-    end  
   end
 end

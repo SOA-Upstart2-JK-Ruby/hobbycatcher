@@ -11,19 +11,18 @@ module HobbyCatcher
       include Dry::Monads[:result]
 
       def call(input)
-        categories = Repository::Hobbies.find_owncategories(input)
+        # categories = Repository::Hobbies.find_owncategories(input)
+        hobby = Repository::Hobbies.find_id(input)
+        categories = hobby.categories
+
+        categories.each do |category|
+          list = Udemy::CategoryMapper.new(App.config.UDEMY_TOKEN).find('subcategory', category.name)
+          Repository::For.entity(list).update_courses(list) if category.courses.empty?
+        end
+
         hobby = Repository::Hobbies.find_id(input)
 
-        courses_intros = []
-        categories.map do |category|
-          courses = Udemy::CourseMapper.new(App.config.UDEMY_TOKEN).find('subcategory', category.name)
-          courses.map do |course_intro|
-            course = Repository::For.entity(course_intro)
-            course.create(course_intro) if course.find(course_intro).nil?
-          end
-          courses_intros.append(courses)
-        end
-        Success(hobby: hobby, categories: categories, courses_intros: courses_intros)
+        Success(hobby)
       rescue StandardError
         Failure('Having trouble accessing Udemy courses')
       end

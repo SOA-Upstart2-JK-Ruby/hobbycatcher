@@ -16,10 +16,10 @@ module HobbyCatcher
         build_entity(data)
       end
 
-      def build_entity(data)
-        data['results'].map do |datam|
-          DataMapper.new(datam).build_entity
-        end
+      def self.build_entity(data)
+        # data['results'].map do |datam|
+        DataMapper.new(data).build_entity
+        # end
       end
 
       # Extracts entity specific elements from data structure
@@ -39,9 +39,11 @@ module HobbyCatcher
             ud_category:  ud_category,
             price:        price,
             rating:       rating,
-            owncategory:  owncategory
+            owncategory_id:  owncategory_id
           )
         end
+
+        private
 
         def ud_course_id
           @course['id']
@@ -72,8 +74,8 @@ module HobbyCatcher
           @course['primary_subcategory']['title']
         end
 
-        def owncategory
-          CategoryMapper.build_entity(@course['primary_subcategory']['title'])
+        def owncategory_id
+          Database::CategoryOrm.where(name: ud_category).first.id
         end
       end
       # rubocop:enable Metrics/MethodLength

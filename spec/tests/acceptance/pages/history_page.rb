@@ -8,7 +8,7 @@ class HistoryPage
             '/history'
   
   div(:warning_message, id: 'flash_bar_danger')
-  div(:success_message, id: 'flash_bar_success')
+  div(:success_message, id: 'flash_bar_warning')
   
   nav(:navigation, id: 'main_header')
   table(:history_table, id: 'history_table')
@@ -16,9 +16,9 @@ class HistoryPage
   indexed_property(
     :hobbies,
     [
-      [:span, :history_time,    { id: 'hobby[%s].time' }],
-      [:span, :history_name,    { id: 'hobby[%s].name' }],
-      [:a,    :history_result,  { id: 'hobby[%s].result' }]
+      [:span, :history_time,  { id: 'hobby[%s].time' }],
+      [:span, :history_name,  { id: 'hobby[%s].name' }],
+      [:a,    :history_link,  { id: 'hobby[%s].link' }]
     ]
   )
 
@@ -32,9 +32,5 @@ class HistoryPage
 
   def first_hobby_delete
     first_hobby_row.button(id: 'hobby[0].delete').click
-  end
-
-  def first_hobby_hover
-    first_hobby_row.hover
   end
 end

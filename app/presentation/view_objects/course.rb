@@ -7,8 +7,8 @@ module Views
       @course = course
     end
 
-    def category_name
-      @course.owncategory.name
+    def category_id
+      @course.owncategory_id
     end
 
     def entity

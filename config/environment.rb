@@ -22,11 +22,17 @@ module HobbyCatcher
 
     use Rack::Session::Cookie, secret: config.SESSION_SECRET
 
-    configure :development, :test do
+    configure :development, :test, :app_test do
       require 'pry'; # for breakpoints
       ENV['DATABASE_URL'] = "sqlite://#{config.DB_FILENAME}"
     end
 
+    configure :app_test do
+      require_relative '../spec/helpers/vcr_helper.rb'
+      VcrHelper.setup_vcr
+      VcrHelper.configure_vcr_for_udemy(recording: :none)
+    end
+    
     # Database Setup
     DB = Sequel.connect(ENV['DATABASE_URL'])
     # deliberately :reek:UncommunicativeMethodName calling method DB
