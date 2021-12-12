@@ -28,11 +28,11 @@ module HobbyCatcher
     end
 
     configure :app_test do
-      require_relative '../spec/helpers/vcr_helper.rb'
+      require_relative '../spec/helpers/vcr_helper'
       VcrHelper.setup_vcr
       VcrHelper.configure_vcr_for_udemy(recording: :none)
     end
-    
+
     # Database Setup
     DB = Sequel.connect(ENV['DATABASE_URL'])
     # deliberately :reek:UncommunicativeMethodName calling method DB

@@ -3,10 +3,9 @@
 # Page object for test page
 class TestPage
   include PageObject
-    
-  page_url HobbyCatcher::App.config.APP_HOST +
-           '/test'
-    
+
+  page_url "#{HobbyCatcher::App.config.APP_HOST}/test"
+
   div(:warning_message, id: 'flash_bar_danger')
   div(:success_message, id: 'flash_bar_success')
 
@@ -21,8 +20,4 @@ class TestPage
       [:radio, :answer2,  { id: 'question[%s].answer2' }]
     ]
   )
-  
-  def see_result_page
-    self.see_result
-  end
 end

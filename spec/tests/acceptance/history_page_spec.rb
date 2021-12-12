@@ -8,25 +8,25 @@ require_relative 'pages/suggestion_page'
 
 describe 'History Page Acceptance Tests' do
   include PageObject::PageFactory
-  
+
   before do
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
-    
     DatabaseHelper.wipe_database
-    @browser = Watir::Browser.new :chrome, :options => options
+    @browser = Watir::Browser.new :chrome, options: options
   end
-  
+
   after do
     @browser.close
   end
-  
+
   it '(HAPPY) should see history if it exists' do
     # GIVEN: user has taken the test at least once
     visit HomePage do |page|
-      page.view_history_page
+      page.view_history
+      @browser.url.include? 'history'
     end
-  
+
     # WHEN: user goes to the history page
     visit HistoryPage do |page|
       # THEN: they should see the history details
@@ -40,19 +40,21 @@ describe 'History Page Acceptance Tests' do
     it '(HAPPY) should be able to delete a history' do
       # GIVEN: user has taken the test at least once
       visit HomePage do |page|
-        page.catch_hobby_page
+        page.catch_hobby
+        @browser.url.include? 'test'
       end
       visit TestPage do |page|
         _(page.questions[0].answer1_element.click)
         _(page.questions[1].answer1_element.click)
         _(page.questions[2].answer1_element.click)
         _(page.questions[3].answer1_element.click)
-        page.see_result_page
+        page.see_result
       end
 
       # WHEN: user goes to the history page and delete the record
       visit HomePage do |page|
-        page.view_history_page
+        page.view_history
+        @browser.url.include? 'history'
       end
       visit HistoryPage do |page|
         page.first_hobby_delete

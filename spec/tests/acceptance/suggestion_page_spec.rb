@@ -12,7 +12,7 @@ describe 'Suggestion Page Acceptance Tests' do
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     DatabaseHelper.wipe_database
-    @browser = Watir::Browser.new :chrome, :options => options
+    @browser = Watir::Browser.new :chrome, options: options
   end
 
   after do
@@ -23,7 +23,8 @@ describe 'Suggestion Page Acceptance Tests' do
     it '(HAPPY) suggest right hobby' do
       # GIVEN: user has taken the test
       visit HomePage do |page|
-        page.catch_hobby_page
+        page.catch_hobby
+        @browser.url.include? 'test'
       end
 
       # WHEN: user answers the questions with the answers
@@ -32,9 +33,9 @@ describe 'Suggestion Page Acceptance Tests' do
         _(page.questions[1].answer1_element.click)
         _(page.questions[2].answer1_element.click)
         _(page.questions[3].answer1_element.click)
-        page.see_result_page
+        page.see_result
       end
-      
+
       visit(SuggestionPage, using_params: { hobby_id: HOBBY_ID }) do |page|
         page.url.include? 'suggestion/1'
         _(page.hobby_name).must_equal 'LION'
@@ -61,11 +62,10 @@ describe 'Suggestion Page Acceptance Tests' do
     it '(HAPPY) redirect to home page' do
       # WHEN: user click the button
       visit(SuggestionPage, using_params: { hobby_id: HOBBY_ID }) do |page|
-        page.try_again_btn
+        page.try_again
+        # THEN: they should find themselves on the home page
+        @browser.url.include? homepage
       end
-
-      # THEN: they should find themselves on the home page
-      @browser.url.include? homepage
     end
   end
 end

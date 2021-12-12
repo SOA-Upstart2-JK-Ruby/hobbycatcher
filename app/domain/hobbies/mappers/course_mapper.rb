@@ -31,15 +31,15 @@ module HobbyCatcher
 
         def build_entity
           HobbyCatcher::Entity::Course.new(
-            id:           nil,
-            ud_course_id: ud_course_id,
-            title:        title,
-            url:          url,
-            image:        image,
-            ud_category:  ud_category,
-            price:        price,
-            rating:       rating,
-            owncategory_id:  owncategory_id
+            id:             nil,
+            ud_course_id:   ud_course_id,
+            title:          title,
+            url:            url,
+            image:          image,
+            ud_category:    ud_category,
+            price:          price,
+            rating:         rating,
+            owncategory_id: owncategory_id
           )
         end
 

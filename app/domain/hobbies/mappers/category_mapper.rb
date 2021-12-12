@@ -54,7 +54,7 @@ module HobbyCatcher
         end
 
         def courses
-          @data.map do |course| 
+          @data.map do |course|
             CourseMapper.build_entity(course)
           end
         end
